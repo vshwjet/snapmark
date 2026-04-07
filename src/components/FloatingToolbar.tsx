@@ -19,12 +19,11 @@ interface FloatingToolbarProps {
   onCopyMarkdown: () => void
 }
 
-function getSavedPosition() {
+function getInitialPosition() {
   try {
     const saved = localStorage.getItem(STORAGE_KEY)
     if (saved) return JSON.parse(saved) as { x: number; y: number }
   } catch { /* ignore */ }
-  // x = CSS `right` value (distance from right edge of viewport)
   return { x: 20, y: window.innerHeight - 44 - 20 }
 }
 
@@ -34,6 +33,7 @@ function savePosition(pos: { x: number; y: number }) {
 
 // pos.x is CSS `right` value — distance from right edge of viewport
 function clampPos(pos: { x: number; y: number }) {
+  if (typeof window === 'undefined') return pos
   const pad = 8
   return {
     x: Math.max(pad, Math.min(window.innerWidth - 44 - pad, pos.x)),
@@ -55,21 +55,26 @@ export function FloatingToolbar({
   onCopyMarkdown,
 }: FloatingToolbarProps) {
   const [showPanel, setShowPanel] = useState(false)
-  const [pos, setPos] = useState(getSavedPosition)
+  const [pos, setPos] = useState<{ x: number; y: number } | null>(null)
   const [isDragging, setIsDragging] = useState(false)
   const dragRef = useRef<{ mx: number; my: number; tx: number; ty: number } | null>(null)
   const justDragged = useRef(false)
+
+  // Set position on client only (avoids SSR/hydration mismatch)
+  useEffect(() => { setPos(getInitialPosition()) }, [])
+
   // Close panel on deactivate
   useEffect(() => { if (!isActive) setShowPanel(false) }, [isActive])
 
   // Clamp on resize
   useEffect(() => {
-    const handler = () => setPos((p) => clampPos(p))
+    const handler = () => setPos((p) => p ? clampPos(p) : p)
     window.addEventListener('resize', handler)
     return () => window.removeEventListener('resize', handler)
   }, [])
 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    if (!pos) return
     if ((e.target as HTMLElement).closest('button,select,input')) return
     e.preventDefault()
     dragRef.current = { mx: e.clientX, my: e.clientY, tx: pos.x, ty: pos.y }
@@ -111,6 +116,8 @@ export function FloatingToolbar({
     if (justDragged.current) return
     onActivate()
   }
+
+  if (!pos) return null
 
   return (
     <div

@@ -1,4 +1,4 @@
-import html2canvas from 'html2canvas'
+import html2canvas from 'html2canvas-pro'
 import type { BoundingBox } from '../../types'
 
 // Pixels of surrounding context to include around the selected region
@@ -31,7 +31,7 @@ export async function captureRegion(box: BoundingBox): Promise<string> {
       windowHeight: document.documentElement.scrollHeight,
       useCORS: true,
       logging: false,
-      ignoreElements: (el) => el.hasAttribute('data-design-qa-ignore'),
+      ignoreElements: (el: Element) => el.hasAttribute('data-design-qa-ignore'),
     })
     return canvas.toDataURL('image/png')
   } finally {

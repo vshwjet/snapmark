@@ -6,9 +6,8 @@ import { resolve } from 'path'
 export default defineConfig({
   plugins: [
     react(),
-    dts({ include: ['src', 'types.ts'], exclude: ['src/test-app'] }),
+    dts({ include: ['src', 'types.ts'] }),
   ],
-  // Let dev server pick up .env from src/test-app when running `vite --root src/test-app`
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
@@ -19,6 +18,9 @@ export default defineConfig({
     rollupOptions: {
       external: ['react', 'react-dom', 'react/jsx-runtime'],
       output: {
+        // Mark all exports as client-only — Next.js App Router respects this
+        // and won't attempt to render the component on the server.
+        banner: '"use client";',
         globals: {
           react: 'React',
           'react-dom': 'ReactDOM',

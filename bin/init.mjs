@@ -4,7 +4,7 @@
 
 import { createInterface } from 'node:readline/promises'
 import { readFileSync, writeFileSync, existsSync, appendFileSync } from 'node:fs'
-import { join, resolve } from 'node:path'
+import { join } from 'node:path'
 import { stdin, stdout, cwd } from 'node:process'
 
 // ── ANSI helpers ───────────────────────────────────────
@@ -124,7 +124,7 @@ function snippet(framework, varName) {
 
   const base = [
     `import { DesignQA } from 'design-qa'`,
-    `import 'design-qa/dist/style.css'`,
+    `import 'design-qa/style.css'`,
     ``,
     `// Inside your root component:`,
     `<DesignQA imgbbApiKey={${envAccess}} />`,
@@ -132,12 +132,10 @@ function snippet(framework, varName) {
 
   if (framework === 'next') {
     return [
-      `// In app/layout.tsx or pages/_app.tsx:`,
-      `import dynamic from 'next/dynamic'`,
-      `const DesignQA = dynamic(() => import('design-qa').then(m => m.DesignQA), { ssr: false })`,
-      `import 'design-qa/dist/style.css'`,
+      `// In app/layout.tsx, inside <body>:`,
+      `import { DesignQA } from 'design-qa'`,
+      `import 'design-qa/style.css'`,
       ``,
-      `// Inside your root component:`,
       `<DesignQA imgbbApiKey={${envAccess}} />`,
     ]
   }
