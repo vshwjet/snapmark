@@ -1,6 +1,6 @@
 {
-  "name": "design-qa",
-  "version": "0.1.0",
+  "name": "snapmark",
+  "version": "1.2.0",
   "description": "Drop-in design QA annotation tool for React frontends",
   "license": "MIT",
   "type": "module",
@@ -17,7 +17,7 @@
     "./style.css": "./dist/style.css"
   },
   "bin": {
-    "design-qa": "./bin/init.mjs"
+    "snapmark": "./bin/init.js"
   },
   "files": [
     "dist",

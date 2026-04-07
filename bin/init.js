@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// design-qa init — onboarding CLI
+// snapmark init — onboarding CLI
 // Requires Node 18+ (uses native fetch + readline/promises)
 
 import { createInterface } from 'node:readline/promises'
@@ -54,9 +54,9 @@ function envFileName(framework) {
 }
 
 function envVarName(framework) {
-  if (framework === 'next' || framework === 'remix') return 'NEXT_PUBLIC_DESIGN_QA_IMGBB_KEY'
-  if (framework === 'vite') return 'VITE_DESIGN_QA_IMGBB_KEY'
-  return 'DESIGN_QA_IMGBB_KEY'
+  if (framework === 'next' || framework === 'remix') return 'NEXT_PUBLIC_SNAPMARK_IMGBB_KEY'
+  if (framework === 'vite') return 'VITE_SNAPMARK_IMGBB_KEY'
+  return 'SNAPMARK_IMGBB_KEY'
 }
 
 function writeEnvKey(projectRoot, framework, apiKey) {
@@ -88,10 +88,10 @@ function ensureGitignore(projectRoot, framework) {
     const contents = readFileSync(gitignore, 'utf8')
     const lines = contents.split('\n').map(l => l.trim())
     if (lines.includes(envFile) || lines.includes(`/${envFile}`)) return false
-    appendFileSync(gitignore, `\n# design-qa env\n${envFile}\n`, 'utf8')
+    appendFileSync(gitignore, `\n# snapmark env\n${envFile}\n`, 'utf8')
     return true
   } else {
-    writeFileSync(gitignore, `# design-qa env\n${envFile}\n`, 'utf8')
+    writeFileSync(gitignore, `# snapmark env\n${envFile}\n`, 'utf8')
     return true
   }
 }
@@ -118,13 +118,13 @@ function snippet(framework, varName) {
     vite:    `import.meta.env.${varName}`,
     next:    `process.env.${varName}`,
     remix:   `process.env.${varName}`,
-    cra:     `process.env.REACT_APP_DESIGN_QA_IMGBB_KEY`,
+    cra:     `process.env.REACT_APP_SNAPMARK_IMGBB_KEY`,
     generic: `process.env.${varName}`,
   }[framework]
 
   const base = [
-    `import { DesignQA } from 'design-qa'`,
-    `import 'design-qa/style.css'`,
+    `import { DesignQA } from 'snapmark'`,
+    `import 'snapmark/style.css'`,
     ``,
     `// Inside your root component:`,
     `<DesignQA imgbbApiKey={${envAccess}} />`,
@@ -133,8 +133,8 @@ function snippet(framework, varName) {
   if (framework === 'next') {
     return [
       `// In app/layout.tsx, inside <body>:`,
-      `import { DesignQA } from 'design-qa'`,
-      `import 'design-qa/style.css'`,
+      `import { DesignQA } from 'snapmark'`,
+      `import 'snapmark/style.css'`,
       ``,
       `<DesignQA imgbbApiKey={${envAccess}} />`,
     ]
@@ -180,7 +180,7 @@ async function main() {
   const projectRoot = cwd()
 
   stdout.write('\n')
-  stdout.write(`  ${bold('✦ Design QA')}  ${dim('— project setup')}\n`)
+  stdout.write(`  ${bold('✦ Snapmark')}  ${dim('— project setup')}\n`)
   stdout.write('\n')
 
   const framework = detectFramework(projectRoot)
