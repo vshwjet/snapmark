@@ -13,7 +13,7 @@ export function Pin({ annotation, isHighlighted, onClick, onHover }: PinProps) {
   return (
     <div
       className={`dqa-pin dqa-pin-${priority}${isHighlighted ? ' dqa-pin-highlighted' : ''}`}
-      data-design-qa-ignore
+      data-snapmark-ignore
       style={{
         // BoundingBox stores document-absolute coords; pins use absolute positioning in the page
         position: 'absolute',

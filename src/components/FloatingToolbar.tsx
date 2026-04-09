@@ -122,7 +122,7 @@ export function FloatingToolbar({
   return (
     <div
       className="dqa-floating"
-      data-design-qa-ignore
+      data-snapmark-ignore
       style={{ right: pos.x, top: pos.y }}
     >
       {/* Annotations panel — floats above toolbar */}

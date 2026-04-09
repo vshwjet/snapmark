@@ -7,7 +7,7 @@ import { FloatingToolbar } from './components/FloatingToolbar'
 import { captureRegion } from './utils/screenshot'
 import { generateMarkdown } from './utils/markdown'
 import { uploadToImgbb } from './utils/imgbb'
-import './styles/design-qa.css'
+import './styles/snapmark.css'
 
 type PendingCapture = {
   box: BoundingBox
@@ -205,12 +205,12 @@ function UploadIndicator({ box }: { box: BoundingBox }) {
     <>
       <div
         className="dqa-uploading-region"
-        data-design-qa-ignore
+        data-snapmark-ignore
         style={{ left: box.x, top: box.y - window.scrollY, width: box.width, height: box.height }}
       />
       <div
         className="dqa-upload-indicator"
-        data-design-qa-ignore
+        data-snapmark-ignore
         style={{ left: cx, top: cy }}
       >
         <span className="dqa-upload-spinner" />

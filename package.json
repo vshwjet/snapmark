@@ -1,17 +1,17 @@
 {
   "name": "snapmark",
-  "version": "1.2.0",
+  "version": "1.2.11",
   "description": "Drop-in design QA annotation tool for React frontends",
   "license": "MIT",
   "type": "module",
-  "main": "./dist/design-qa.cjs",
-  "module": "./dist/design-qa.js",
+  "main": "./dist/snapmark.cjs",
+  "module": "./dist/snapmark.js",
   "types": "./dist/src/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/src/index.d.ts",
-      "import": "./dist/design-qa.js",
-      "require": "./dist/design-qa.cjs"
+      "import": "./dist/snapmark.js",
+      "require": "./dist/snapmark.cjs"
     },
     "./dist/style.css": "./dist/style.css",
     "./style.css": "./dist/style.css"

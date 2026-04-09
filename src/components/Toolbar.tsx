@@ -9,7 +9,7 @@ interface ToolbarProps {
 
 export function Toolbar({ mode, onModeChange, annotationCount, onClose }: ToolbarProps) {
   return (
-    <div className="dqa-toolbar" data-design-qa-ignore>
+    <div className="dqa-toolbar" data-snapmark-ignore>
       <div className="dqa-toolbar-badge">
         <div className="dqa-toolbar-dot" />
         QA Mode Active

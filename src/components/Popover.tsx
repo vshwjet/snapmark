@@ -70,7 +70,7 @@ export function Popover({ box, screenshot, onAdd, onCancel }: PopoverProps) {
     <div
       ref={popoverRef}
       className="dqa-popover"
-      data-design-qa-ignore
+      data-snapmark-ignore
       style={{ left, top }}
     >
       <img

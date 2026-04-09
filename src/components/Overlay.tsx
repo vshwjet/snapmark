@@ -62,7 +62,7 @@ export function Overlay({ mode, onInspectCapture, onAreaCapture }: OverlayProps)
       const target = deepElementFromPoint(e.clientX, e.clientY)
       if (overlayEl) overlayEl.style.pointerEvents = ''
 
-      if (!target || closestCrossingShadow(target, '[data-design-qa-ignore]')) {
+      if (!target || closestCrossingShadow(target, '[data-snapmark-ignore]')) {
         setHoverRect(null)
         return
       }
@@ -84,7 +84,7 @@ export function Overlay({ mode, onInspectCapture, onAreaCapture }: OverlayProps)
       const target = deepElementFromPoint(e.clientX, e.clientY)
       if (overlayEl) overlayEl.style.pointerEvents = ''
 
-      if (!target || closestCrossingShadow(target, '[data-design-qa-ignore]')) return
+      if (!target || closestCrossingShadow(target, '[data-snapmark-ignore]')) return
 
       const rect = target.getBoundingClientRect()
       const box: BoundingBox = {
@@ -174,12 +174,12 @@ export function Overlay({ mode, onInspectCapture, onAreaCapture }: OverlayProps)
 
   return (
     <>
-      <div ref={overlayRef} className="dqa-overlay" data-design-qa-ignore />
+      <div ref={overlayRef} className="dqa-overlay" data-snapmark-ignore />
 
       {mode === 'inspect' && hoverRect && (
         <div
           className="dqa-highlight"
-          data-design-qa-ignore
+          data-snapmark-ignore
           style={{
             top: hoverRect.top,
             left: hoverRect.left,
@@ -192,7 +192,7 @@ export function Overlay({ mode, onInspectCapture, onAreaCapture }: OverlayProps)
       {mode === 'area' && selectionStyle && (
         <div
           className="dqa-selection-rect"
-          data-design-qa-ignore
+          data-snapmark-ignore
           style={selectionStyle}
         />
       )}

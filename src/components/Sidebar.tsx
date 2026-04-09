@@ -19,7 +19,7 @@ export function Sidebar({
   onCopyMarkdown,
 }: SidebarProps) {
   return (
-    <div className="dqa-sidebar" data-design-qa-ignore>
+    <div className="dqa-sidebar" data-snapmark-ignore>
       <div className="dqa-sidebar-header">Annotations</div>
 
       <div className="dqa-sidebar-list">
