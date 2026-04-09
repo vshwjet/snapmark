@@ -24,3 +24,8 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+# Local dev / reference
+reference/
+test-app/
+test-app-next/
