@@ -45,7 +45,9 @@ export default function RootLayout({ children }) {
     <html>
       <body>
         {children}
-        <DesignQA imgbbApiKey={process.env.NEXT_PUBLIC_SNAPMARK_IMGBB_KEY} />
+        {process.env.NODE_ENV === 'development' && (
+          <DesignQA imgbbApiKey={process.env.NEXT_PUBLIC_SNAPMARK_IMGBB_KEY} />
+        )}
       </body>
     </html>
   )
@@ -60,6 +62,40 @@ npx snapmark
 ```
 
 The CLI detects your framework, prompts for an imgBB key, writes it to `.env.local`, and shows you the exact snippet to paste.
+
+---
+
+## Keeping it out of production
+
+Snapmark must never render in production. Use an env variable to gate it.
+
+**Vite** — `import.meta.env.DEV` is `true` only during `vite dev`, `false` in `vite build`:
+
+```tsx
+{import.meta.env.DEV && <DesignQA />}
+```
+
+**Next.js** — `NODE_ENV` is set to `'production'` automatically on `next build`:
+
+```tsx
+{process.env.NODE_ENV === 'development' && <DesignQA />}
+```
+
+**Custom env variable** — if you want explicit control (e.g. enable in staging):
+
+```tsx
+{process.env.NEXT_PUBLIC_ENABLE_DESIGN_QA === 'true' && <DesignQA />}
+```
+
+```bash
+# .env.development (committed — no secrets)
+NEXT_PUBLIC_ENABLE_DESIGN_QA=true
+
+# .env.production (or simply omit it — defaults to falsy)
+NEXT_PUBLIC_ENABLE_DESIGN_QA=false
+```
+
+When the condition is false, React renders nothing and the component's event listeners, DOM nodes, and keyboard shortcuts are never registered.
 
 ---
 
