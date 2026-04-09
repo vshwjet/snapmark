@@ -6,7 +6,9 @@ A drop-in design QA annotation tool for React frontends. Activate an overlay, cl
 
 ---
 
-## Install
+## Setup
+
+### Step 1 — Install
 
 ```bash
 npm install snapmark
@@ -14,32 +16,83 @@ npm install snapmark
 
 ---
 
-## Quick start
+### Step 2 — CLI setup (optional)
 
-### Vite / CRA
+The fastest way to finish setup. Run this inside your project:
+
+```bash
+npx snapmark
+```
+
+The CLI detects your framework (Vite, CRA, Next.js), prompts for an imgBB API key, writes it to `.env.local`, and outputs the exact snippet to paste into your app. If you use the CLI, you can skip steps 3–5.
+
+---
+
+### Step 3 — Get an imgBB API key
+
+Snapmark uploads screenshots to [imgBB](https://api.imgbb.com/) so the exported Markdown contains real hosted image URLs instead of large base64 blobs. **imgBB is currently the only supported image host.**
+
+1. Go to [https://api.imgbb.com/](https://api.imgbb.com/) and create a free account
+2. Generate an API key from your dashboard
+3. Keep it handy for the next step
+
+> Without an API key, screenshots are embedded as base64 data URIs directly in the Markdown. This works but produces very large documents.
+
+---
+
+### Step 4 — Add the API key to your environment
+
+Add the key to your local env file. **Do not commit this file.**
+
+**Vite / CRA** — add to `.env.local`:
+
+```bash
+VITE_SNAPMARK_IMGBB_KEY=your_api_key_here
+```
+
+**Next.js** — add to `.env.local`:
+
+```bash
+NEXT_PUBLIC_SNAPMARK_IMGBB_KEY=your_api_key_here
+```
+
+Make sure `.env.local` is in your `.gitignore` (it is by default in Next.js and Vite projects).
+
+---
+
+### Step 5 — Add the imports
+
+At the top of your root component file, add:
 
 ```tsx
 import { DesignQA } from 'snapmark'
 import 'snapmark/style.css'
+```
 
+---
+
+### Step 6 — Add the component
+
+Render `<DesignQA />` in dev only. Pass the API key as a prop.
+
+**Vite / CRA** — in your root `App.tsx`:
+
+```tsx
 function App() {
   return (
     <>
       <YourApp />
-      {import.meta.env.DEV && <DesignQA />}
+      {import.meta.env.DEV && (
+        <DesignQA imgbbApiKey={import.meta.env.VITE_SNAPMARK_IMGBB_KEY} />
+      )}
     </>
   )
 }
 ```
 
-### Next.js App Router
-
-Add to your root `app/layout.tsx`, inside `<body>`:
+**Next.js App Router** — in your root `app/layout.tsx`, inside `<body>`:
 
 ```tsx
-import { DesignQA } from 'snapmark'
-import 'snapmark/style.css'
-
 export default function RootLayout({ children }) {
   return (
     <html>
@@ -54,48 +107,7 @@ export default function RootLayout({ children }) {
 }
 ```
 
-Or use the CLI to set it up automatically:
-
-```bash
-cd your-project
-npx snapmark
-```
-
-The CLI detects your framework, prompts for an imgBB key, writes it to `.env.local`, and shows you the exact snippet to paste.
-
----
-
-## Keeping it out of production
-
-Snapmark must never render in production. Use an env variable to gate it.
-
-**Vite** — `import.meta.env.DEV` is `true` only during `vite dev`, `false` in `vite build`:
-
-```tsx
-{import.meta.env.DEV && <DesignQA />}
-```
-
-**Next.js** — `NODE_ENV` is set to `'production'` automatically on `next build`:
-
-```tsx
-{process.env.NODE_ENV === 'development' && <DesignQA />}
-```
-
-**Custom env variable** — if you want explicit control (e.g. enable in staging):
-
-```tsx
-{process.env.NEXT_PUBLIC_ENABLE_DESIGN_QA === 'true' && <DesignQA />}
-```
-
-```bash
-# .env.development (committed — no secrets)
-NEXT_PUBLIC_ENABLE_DESIGN_QA=true
-
-# .env.production (or simply omit it — defaults to falsy)
-NEXT_PUBLIC_ENABLE_DESIGN_QA=false
-```
-
-When the condition is false, React renders nothing and the component's event listeners, DOM nodes, and keyboard shortcuts are never registered.
+The `DEV` / `NODE_ENV` guard ensures the component — and all its event listeners and DOM nodes — is completely absent from production builds.
 
 ---
 
