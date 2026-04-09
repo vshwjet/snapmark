@@ -1,69 +1,145 @@
-# Design QA
+# Snapmark
 
-A drop-in design QA annotation tool for React frontends. Click or drag to annotate elements, capture screenshots, write feedback, and export a structured Markdown doc.
+A drop-in design QA annotation tool for React frontends. Activate an overlay, click or drag to select any element or region, write feedback, and export everything as a structured Markdown document with inline screenshots.
 
-**Dev-only. No backend. No accounts. Zero production impact.**
+**No backend. No accounts. No production impact — dev only.**
 
 ---
 
-## Setup (for your dev)
+## Install
 
-Copy `src/DesignQA.tsx` and the `src/utils/` folder into your project, then:
+```bash
+npm install snapmark
+```
+
+---
+
+## Quick start
+
+### Vite / CRA
 
 ```tsx
-import { DesignQA } from './DesignQA'
+import { DesignQA } from 'snapmark'
+import 'snapmark/style.css'
 
 function App() {
   return (
     <>
       <YourApp />
-      {process.env.NODE_ENV === 'development' && <DesignQA />}
+      {import.meta.env.DEV && <DesignQA />}
     </>
   )
 }
 ```
 
-Install the one dependency:
+### Next.js App Router
 
-```bash
-npm install html2canvas -D
+Add to your root `app/layout.tsx`, inside `<body>`:
+
+```tsx
+import { DesignQA } from 'snapmark'
+import 'snapmark/style.css'
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        {children}
+        <DesignQA imgbbApiKey={process.env.NEXT_PUBLIC_SNAPMARK_IMGBB_KEY} />
+      </body>
+    </html>
+  )
+}
 ```
 
-That's it.
+Or use the CLI to set it up automatically:
+
+```bash
+cd your-project
+npx snapmark
+```
+
+The CLI detects your framework, prompts for an imgBB key, writes it to `.env.local`, and shows you the exact snippet to paste.
 
 ---
 
 ## Usage
 
-- **`Cmd+Shift+A`** — toggle QA overlay on/off
-- **Click** an element → annotate it (snaps to element bounds)
-- **Drag** any region → annotate that area
-- Fill in comment, category, priority → **Add**
-- **Copy Markdown** → paste into Notion, Slack, or Jira description
+| Action | Result |
+|---|---|
+| `Cmd+Shift+A` / `Ctrl+Shift+A` | Toggle QA overlay on / off |
+| **Hover** an element | Blue highlight shows the target bounds |
+| **Click** an element | Capture it (inspect mode) |
+| **Hold Shift + drag** | Draw a freehand region (area mode) |
+| Fill in comment, category, priority → **Add** | Pin placed on page, annotation added to sidebar |
+| **Copy Markdown** | Copies full report to clipboard |
 
 ---
 
-## Development (this repo)
+## Props
 
-```bash
-# Clone agentation as reference (gitignored, not committed)
-mkdir reference && cd reference
-git clone https://github.com/benjitaylor/agentation.git
-cd ..
+| Prop | Type | Description |
+|---|---|---|
+| `imgbbApiKey` | `string` | Optional. imgBB API key for hosted image URLs in the Markdown export. Get one free at [imgbb.com](https://imgbb.com). Without it, screenshots are embedded as base64. |
 
-# Install deps
-npm install
+---
 
-# Run the test app
-npm run dev
+## Markdown export
+
+Clicking **Copy Markdown** produces a document like this:
+
+```markdown
+# Design QA — https://localhost:3000/
+April 9, 2026 · 3 annotations · 1 blocking · 1 important · 1 suggestion
+
+---
+
+## #1 · 🔴 P1 · Spacing
+
+![Annotation 1](https://i.ibb.co/...)
+
+**Issue:** Button padding is inconsistent with the design spec — should be 12px vertical.
+
+**Element:** `main > section > button.btn-primary`
+
+---
 ```
 
-Claude Code uses `CLAUDE.md` for full context on what to build and what to reference from Agentation.
+Each annotation includes a cropped screenshot of the selected region, the comment, and the CSS selector path (inspect mode only).
+
+---
+
+## How it works
+
+- **Inspect mode** — hover highlights DOM elements with a blue outline (like browser devtools). Click to snap to the element's bounding box.
+- **Area mode** — drag a freehand rectangle over any part of the page.
+- Screenshots are captured with [html2canvas-pro](https://github.com/niklasvh/html2canvas). The overlay UI is excluded from captures. All CSS animations are collapsed to their final state before capture so you always get a clean, fully-rendered frame.
+- Pins (numbered circles) are placed on the page at each annotation's location. They persist while the overlay is active.
+- All state is in memory. Nothing is written to disk or sent anywhere except optional imgBB uploads.
 
 ---
 
 ## Requirements
 
 - React 18+
-- Chrome (desktop)
-- Dev mode only
+- Modern Chromium browser
+- Dev environment only
+
+---
+
+## Development
+
+```bash
+git clone https://github.com/vshwjet/snapmark.git
+cd snapmark
+npm install
+
+# Build the library
+npm run build
+
+# Run the Vite test app
+npm run test-app:dev
+
+# Run the Next.js test app
+npm run test-app-next:dev
+```
